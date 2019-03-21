@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}" />
+    <link rel="stylesheet" th:href="@{/css/base/login.css}" />
+    <title>登录</title>
+</head>
+<body>
+<div th:replace="common/common::account-info"></div>
+
+<div class="tip">请填写账户的登录信息</div>
+<div class="msg" th:if="${msg != null}" th:text="${msg}"></div>
+<div class="msg" th:if="${param.error}" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></div>
+
+<form th:action="@{/login}" method="post">
+    <div>
+        <span>名称：</span>
+        <input type="text" name="username" th:value="${account == null} ? _ : ${account.name}" />
+    </div>
+    <div>
+        <span>密码：</span>
+        <input type="password" name="password" th:value="${account == null} ? _ : ${account.password}" />
+    </div>
+    <div>
+        <a th:href="@{/forget}" >忘记密码？</a>
+    </div>
+    <div>
+        <span>记住我：</span>
+        <input name="remember-me" type="checkbox"/>
+    </div>
+    <div>
+        <input type="submit" value="提交" />
+    </div>
+</form>
+</body>
+
+<div th:replace="common/common::jquery"></div>
+<div th:replace="common/common::logoutFormJS"></div>
+
+</html>

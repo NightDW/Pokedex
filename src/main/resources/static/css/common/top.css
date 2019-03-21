@@ -1,0 +1,41 @@
+.top{
+    margin-top: 10px;
+    height: 100px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.top .up{
+    height: 70%;
+    width: 100%;
+}
+.top .down{
+    height: 30%;
+    width: 100%;
+}
+.top .up .title{
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    font-size: 60px;
+    font-family: 楷体;
+}
+.top .down .select{
+    height: 100%;
+    width: 800px;
+    margin: 0 auto;
+}
+.top .down .select a{
+    display: inline-block;
+    box-sizing: border-box;
+    background: #CCCCCC;
+    height: 100%;
+    width: 19%;
+    border: gray 1px solid;
+    text-decoration: none;
+    font-size: 20px;
+    padding-top: 5px;
+    text-align: center;
+    font-family: 楷体;
+    line-height: 100%;
+}

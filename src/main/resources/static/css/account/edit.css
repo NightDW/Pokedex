@@ -1,0 +1,45 @@
+.tip{
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    font-family: 楷体;
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+form{
+    background: #EEEEEE;
+}
+form div{
+    width: 634px;
+    height: 50px;
+    margin: 10px auto;
+    font-size: 20px;
+}
+form div:last-of-type{
+    width: 220px;
+}
+form div span{
+    display: inline-block;
+    height: 50px;
+    width: 80px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 20px;
+}
+form div input,select{
+    display: inline-block;
+    font-size: 20px;
+    box-sizing: border-box;
+    height: 40px;
+    width: 220px;
+    line-height: 40px;
+}
+form div:nth-of-type(2) input{
+    width: 534px;
+}
+form div input[type=radio]{
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-top: -2px;
+}

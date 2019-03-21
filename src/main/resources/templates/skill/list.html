@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}">
+    <link rel="stylesheet" th:href="@{/css/common/top.css}" />
+    <link rel="stylesheet" th:href="@{/css/skill/list.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/navigate-bar.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/foot.css}" />
+    <title>列表</title>
+</head>
+<body>
+<div th:replace="common/common::account-info"></div>
+
+    <div th:replace="common/common::top"></div>
+
+    <table class="skill-list">
+        <caption>
+            <div>技能信息列表</div>
+            <a sec:authorize="hasAnyRole('admin', 'super_admin')" th:href="@{/skill}+'?curPage='+${pageBean.pageInfo.pageNum}">添加技能</a>
+        </caption>
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>名称</th>
+                <th>属性</th>
+                <th>分类</th>
+                <th>威力</th>
+                <th>命中</th>
+                <th>PP</th>
+                <th>效果</th>
+                <th sec:authorize="hasAnyRole('admin', 'super_admin')">修改</th>
+                <th sec:authorize="hasAnyRole('admin', 'super_admin')">删除</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="skill, skillStat : ${pageBean.list}">
+                <td th:text="${skillStat.index + 1}"></td>
+                <td th:text="${skill.name}"></td>
+                <td th:text="${skill.type == null ? '-' : skill.type.name}"></td>
+                <td th:text="${skill.category == null ? '-' : skill.category.name}"></td>
+                <td th:text="${skill.power}"></td>
+                <td th:text="${skill.accuracy}"></td>
+                <td th:text="${skill.pp}"></td>
+                <td th:text="${skill.effect}"></td>
+                <td sec:authorize="hasAnyRole('admin', 'super_admin')"><button class="updateButton" th:attr="submit_uri=@{/skill/}+${skill.id}">修改</button></td>
+                <td sec:authorize="hasAnyRole('admin', 'super_admin')"><button class="deleteButton" th:attr="submit_uri=@{/skill/}+${skill.id}">删除</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div th:include="common/common::forms(${pageBean})"></div>
+
+    <div th:replace="common/common::navigate-bar(${pageBean}, 'skills')"></div>
+
+    <div th:replace="common/common::foot"></div>
+</body>
+
+<div th:replace="common/common::jquery"></div>
+<div th:replace="common/common::logoutFormJS"></div>
+<div th:replace="common/common::submitFormJS"></div>
+
+</html>

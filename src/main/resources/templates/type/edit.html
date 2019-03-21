@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}">
+    <link rel="stylesheet" th:href="@{/css/type/edit.css}">
+    <title>编辑</title>
+</head>
+<!--
+    修改属性信息时会先查找属性信息然后转发到这个页面
+    添加属性信息时同样会跳转到这个页面
+    也就是说这个页面需要负责属性的修改和添加
+    可以根据请求域中是否有type对象来判断是修改还是添加
+    如果是修改，提交的请求需要用PUT方式；添加则用POST方式
+-->
+<body>
+<div th:replace="common/common::account-info"></div>
+
+<div class="tip">请填写属性的详细信息</div>
+
+<form th:action="@{/type}" method="post">
+    <!-- 如果获取到了type对象，说明此时是修改操作，需要把id提交给服务器 -->
+    <input type="hidden" th:if="${type != null}" name="id" th:value="${type.id}" />
+    <!-- 同理，如果获取到了type对象，则需要把请求方式改为PUT -->
+    <input type="hidden" th:if="${type != null}" name="_method" value="put" />
+    <!-- 再提供一个参数，方便添加/修改完成后可以重定向回原来的那个页面 -->
+    <input type="hidden" th:if="${curPage != null}" name="curPage" th:value="${curPage}" />
+    <div>
+        <span>名称：</span>
+        <input type="text" name="name" th:value="${type == null} ? _ : ${type.name}" />
+    </div>
+    <div>
+        <span>地址：</span>
+        <input type="text" name="iconUrl" th:value="${type == null} ? _ : ${type.iconUrl}" />
+    </div>
+    <div>
+        <input type="submit" value="提交" />
+    </div>
+</form>
+</body>
+
+<div th:replace="common/common::jquery"></div>
+<div th:replace="common/common::logoutFormJS"></div>
+
+</html>

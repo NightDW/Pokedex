@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}">
+    <link rel="stylesheet" th:href="@{/css/base/modify.css}">
+    <title>注册</title>
+</head>
+<body>
+<div th:replace="common/common::account-info"></div>
+
+<div class="tip">请填写新的账户信息</div>
+
+<form th:action="@{/modify}" method="post" id="modifyForm">
+    <input id="id" type="hidden" name="id" th:value="${account.id}" />
+    <input id="old_email" type="hidden" th:value="${account.email}" />
+    <div>
+        <span>用户名：</span>
+        <input id="name" type="text" name="name" th:value="${account.name}" />
+    </div>
+    <div>
+        <span id="name_span"></span>
+    </div>
+    <div>
+        <span>密码：</span>
+        <input id="password" type="password" name="password" th:value="${account.password}" />
+    </div>
+    <div>
+        <span>确认密码：</span>
+        <input id="password_confirm" type="password" th:value="${account.password}" />
+    </div>
+    <div>
+        <span>邮箱：</span>
+        <input id="email" type="email" name="email" th:value="${account.email}" />
+    </div>
+    <div>
+        <span id="email_span"></span>
+    </div>
+    <div>
+        <span>角色：</span>
+        <select name="role.id">
+            <option th:each="role, roleStat : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${account.role.id == role.id} ? 'selected' : _"></option>
+        </select>
+    </div>
+    <div>
+        <input type="button" id="submitButton" value="提交" />
+    </div>
+</form>
+</body>
+
+<div th:replace="common/common::jquery"></div>
+<div th:replace="common/common::logoutFormJS"></div>
+<script>
+    $("#submitButton").click(function () {
+        var name = $("#name").val();
+        var password = $("#password").val();
+        var password_confirm = $("#password_confirm").val();
+        var email = $("#email").val();
+        var old_email = $("#old_email").val();
+        if(name == null || password == null || password_confirm == null || email == null || name === "" || password === "" || password_confirm === "" || email === "")
+            alert("请把信息填写完整！");
+        else if(password !== password_confirm)
+            alert("两次密码输入不同，请重新输入！");
+        else{
+            var msg1 = "修改信息后将退出登录，需要用新信息登录，确定吗？";
+            var msg2 = "检测到您修改了邮箱，修改后账户将暂时锁定，需要重新验证邮箱后才能激活，确定吗？";
+            if(old_email !== email)
+                if(!confirm(msg2))
+                    return;
+
+            if(confirm(msg1))
+                $("#modifyForm").submit();
+        }
+    });
+    $("#name").blur(function () {
+        var name = $("#name").val();
+        var id = $("#id").val();
+        $.ajax({
+            url: "/check/name-not-id",
+            data:{
+                name: name,
+                id: id
+            },
+            success:function(data){
+                if(data != null)
+                    $("#name_span").text(data);
+            }
+        });
+    });
+    $("#email").blur(function () {
+        var email = $("#email").val();
+        var id = $("#id").val();
+        $.ajax({
+            url: "/check/email-not-id",
+            data:{
+                email: email,
+                id: id
+            },
+            success:function (data) {
+                if (data != null)
+                    $("#email_span").text(data);
+            }
+        })
+    })
+</script>
+
+</html>

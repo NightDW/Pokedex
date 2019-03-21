@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}">
+    <link rel="stylesheet" th:href="@{/css/common/top.css}" />
+    <link rel="stylesheet" th:href="@{/css/pokemon/list.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/navigate-bar.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/foot.css}" />
+    <title>列表</title>
+</head>
+<body>
+<div th:replace="common/common::account-info"></div>
+
+    <div th:replace="common/common::top"></div>
+
+    <table class="pokemon-list">
+        <caption>
+            <div>宝可梦信息列表</div>
+            <a sec:authorize="hasAnyRole('admin', 'super_admin')" th:href="@{/pokemon}+'?curPage='+${pageBean.pageInfo.pageNum}">添加宝可梦</a>
+        </caption>
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>名称</th>
+                <th>属性1</th>
+                <th>属性2</th>
+                <th>特性1</th>
+                <th>特性2</th>
+                <th>特性3</th>
+                <th>HP</th>
+                <th>物攻</th>
+                <th>物防</th>
+                <th>特攻</th>
+                <th>特防</th>
+                <th>速度</th>
+                <th sec:authorize="hasAnyRole('admin', 'super_admin')">修改</th>
+                <th sec:authorize="hasAnyRole('admin', 'super_admin')">删除</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="pokemon, pokemonStat : ${pageBean.list}">
+                <td th:text="${pokemonStat.index + 1}" />
+                <td th:text="${pokemon.name}" />
+                <td th:text="${(!#lists.isEmpty(pokemon.types) && #lists.size(pokemon.types) >=1) ? pokemon.types[0].name : '-'}" />
+                <td th:text="${(!#lists.isEmpty(pokemon.types) && #lists.size(pokemon.types) >=2) ? pokemon.types[1].name : '-'}" />
+                <td th:text="${(!#lists.isEmpty(pokemon.abilities) && #lists.size(pokemon.abilities) >=1) ? pokemon.abilities[0].name : '-'}" />
+                <td th:text="${(!#lists.isEmpty(pokemon.abilities) && #lists.size(pokemon.abilities) >=2) ? pokemon.abilities[1].name : '-'}" />
+                <td th:text="${(!#lists.isEmpty(pokemon.abilities) && #lists.size(pokemon.abilities) >=3) ? pokemon.abilities[2].name : '-'}" />
+                <td th:text="${pokemon.hp}">HP</td>
+                <td th:text="${pokemon.atk}">物攻</td>
+                <td th:text="${pokemon.def}">物防</td>
+                <td th:text="${pokemon.spa}">特攻</td>
+                <td th:text="${pokemon.spd}">特防</td>
+                <td th:text="${pokemon.spe}">速度</td>
+                <td sec:authorize="hasAnyRole('admin', 'super_admin')"><button class="updateButton" th:attr="submit_uri=@{/pokemon/}+${pokemon.id}">修改</button></td>
+                <td sec:authorize="hasAnyRole('admin', 'super_admin')"><button class="deleteButton" th:attr="submit_uri=@{/pokemon/}+${pokemon.id}">删除</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div th:include="common/common::forms(${pageBean})"></div>
+
+    <div th:replace="common/common::navigate-bar(${pageBean}, 'pokemons')"></div>
+
+    <div th:replace="common/common::foot"></div>
+</body>
+
+<div th:replace="common/common::jquery"></div>
+<div th:replace="common/common::logoutFormJS"></div>
+<div th:replace="common/common::submitFormJS"></div>
+</html>

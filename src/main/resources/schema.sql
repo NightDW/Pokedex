@@ -1,0 +1,57 @@
+CREATE TABLE IF NOT EXISTS pokemon(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	-- icon_url VARCHAR(255),
+	name VARCHAR(255),
+	type_name1 VARCHAR(255),
+	type_name2 VARCHAR(255),
+	ability_name1 VARCHAR(255),
+	ability_name2 VARCHAR(255),
+	ability_name3 VARCHAR(255),
+	hp INT,  atk INT, def INT,
+	spa INT, spd INT, spe INT
+);
+
+CREATE TABLE IF NOT EXISTS skill(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(255),
+	type_name VARCHAR(255),
+	category_name VARCHAR(255),
+	pow INT,
+	accuracy INT,
+	pp INT,
+	effect VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS ability(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS pkmtype(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  icon_url VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS category(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  icon_url VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS role(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS account(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  is_active TINYINT(1) DEFAULT 0,
+  role_id INT,
+  verify_code VARCHAR(255),
+  CONSTRAINT FOREIGN KEY(role_id) REFERENCES role(id)
+)

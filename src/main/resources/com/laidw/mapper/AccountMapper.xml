@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.laidw.mapper.AccountMapper">
+
+    <!-- ResultMap -->
+    <resultMap id="accountMap" type="com.laidw.entity.Account">
+        <id column="id" property="id" />
+        <association select="com.laidw.mapper.RoleMapper.selectRoleById" property="role" column="role_id" />
+        <!-- 其它字段在Account类中都有对应的属性，可以不配置 -->
+    </resultMap>
+
+    <!-- saveAccount() -->
+    <insert id="saveAccount" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO account(name, password, email, is_active, role_id, verify_code)
+        VALUES(#{name}, #{password}, #{email}, #{isActive}, #{role.id}, #{verifyCode})
+    </insert>
+
+    <!-- deleteAccountById() -->
+    <delete id="deleteAccountById">
+        DELETE FROM account WHERE id=#{id}
+    </delete>
+
+    <!-- deleteAccountByName() -->
+    <delete id="deleteAccountByName">
+        DELETE FROM account WHERE name=#{name}
+    </delete>
+
+    <!-- deleteAllAccounts() -->
+    <delete id="deleteAllAccounts">
+        DELETE FROM account
+    </delete>
+
+    <!-- deleteAccountsByRoleId() -->
+    <delete id="deleteAccountsByRoleId">
+        DELETE FROM account WHERE role_id=#{roleId}
+    </delete>
+
+    <!-- updateAccountById() -->
+    <update id="updateAccountById">
+        UPDATE account SET
+          name=#{name},
+          password=#{password},
+          email=#{email},
+          is_active=#{isActive},
+          role_id=#{role.id},
+          verify_code=#{verifyCode}
+        WHERE id=#{id}
+    </update>
+
+    <!-- updateAccountByName() -->
+    <update id="updateAccountByName">
+        UPDATE account SET
+          password=#{password},
+          email=#{email},
+          is_active=#{isActive},
+          role_id=#{role.id}
+          verify_code=#{verifyCode}
+        WHERE name=#{name}
+    </update>
+
+    <!-- updateAccountVerifyCodeById() -->
+    <update id="updateAccountVerifyCodeById">
+        UPDATE account SET verify_code=#{verifyCode} WHERE id=#{id}
+    </update>
+
+    <!-- activateAccountById() -->
+    <update id="activateAccountById">
+        UPDATE account SET is_active=1 WHERE id=#{id}
+    </update>
+
+    <!-- selectAccountById() -->
+    <select id="selectAccountById" resultMap="accountMap">
+        SELECT * FROM account WHERE id=#{id}
+    </select>
+
+    <!-- selectAccountByName() -->
+    <select id="selectAccountByName" resultMap="accountMap">
+        SELECT * FROM account WHERE name=#{name}
+    </select>
+
+    <!-- selectAccountByEmail() -->
+    <select id="selectAccountByEmail" resultMap="accountMap">
+        SELECT * FROM account WHERE email=#{email}
+    </select>
+
+    <!-- selectAccountByNameAndNotId() -->
+    <select id="selectAccountByNameAndNotId" resultMap="accountMap">
+        SELECT * FROM account WHERE name=#{name} AND id!=#{id}
+    </select>
+
+    <!-- selectAccountByEmailAndNotId() -->
+    <select id="selectAccountByEmailAndNotId" resultMap="accountMap">
+        SELECT * FROM account WHERE email=#{email} AND id!=#{id}
+    </select>
+
+    <!-- selectAllAccounts() -->
+    <select id="selectAllAccounts" resultMap="accountMap">
+        SELECT * FROM account
+    </select>
+
+    <!-- selectAccountVerifyCodeById() -->
+    <select id="selectAccountVerifyCodeById">
+        SELECT verify_code FROM account WHERE id=#{id}
+    </select>
+</mapper>

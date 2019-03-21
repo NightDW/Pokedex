@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>找回密码</title>
+</head>
+<body>
+您的账户信息为：<br>
+账户名：<span th:text="${account.name}"></span><br>
+密码：<span th:text="${account.password}"></span><br>
+绑定的邮箱：<span th:text="${account.email}"></span><br>
+是否激活：<span th:text="${account.isActive}"></span><br>
+身份：<span th:text="${account.role.name}"></span><br>
+请妥善保管好您的账户信息！
+</body>
+</html>

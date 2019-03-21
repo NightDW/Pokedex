@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}">
+    <link rel="stylesheet" th:href="@{/css/common/top.css}" />
+    <link rel="stylesheet" th:href="@{/css/type/list.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/navigate-bar.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/foot.css}" />
+    <title>列表</title>
+</head>
+<body>
+<div th:replace="common/common::account-info"></div>
+
+<div th:replace="common/common::top"></div>
+
+<table class="type-list">
+    <caption>
+        <div>宝可梦属性列表</div>
+        <a sec:authorize="hasAnyRole('admin', 'super_admin')" th:href="@{/type}+'?curPage='+${pageBean.pageInfo.pageNum}">添加属性</a>
+    </caption>
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>名称</th>
+        <th>图标地址</th>
+        <th sec:authorize="hasAnyRole('admin', 'super_admin')">修改</th>
+        <th sec:authorize="hasAnyRole('admin', 'super_admin')">删除</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="type, typeStat : ${pageBean.list}">
+        <td th:text="${typeStat.index + 1}"></td>
+        <td th:text="${type.name}"></td>
+        <td th:text="${type.iconUrl}"></td>
+        <td sec:authorize="hasAnyRole('admin', 'super_admin')"><button class="updateButton" th:attr="submit_uri=@{/type/}+${type.id}">修改</button></td>
+        <td sec:authorize="hasAnyRole('admin', 'super_admin')"><button class="deleteButton" th:attr="submit_uri=@{/type/}+${type.id}">删除</button></td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:include="common/common::forms(${pageBean})"></div>
+
+<div th:replace="common/common::navigate-bar(${pageBean}, 'types')"></div>
+
+<div th:replace="common/common::foot"></div>
+</body>
+
+<div th:replace="common/common::jquery"></div>
+<div th:replace="common/common::logoutFormJS"></div>
+<div th:replace="common/common::submitFormJS"></div>
+</html>

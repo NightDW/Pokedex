@@ -1,0 +1,23 @@
+.account-info{
+    height: 50px;
+    background: #EEEEEE;
+    text-align: right;
+}
+.account-info div{
+    height: 50px;
+    line-height: 50px;
+    font-size: 24px;
+    font-family: 楷体;
+}
+.account-info div:first-of-type{
+    float: left;
+}
+.account-info div a{
+    text-decoration: none;
+}
+.account-info div form{
+    display: inline-block;
+}
+.account-info div input{
+    height: 24px;
+}

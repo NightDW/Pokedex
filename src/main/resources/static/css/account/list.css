@@ -1,0 +1,28 @@
+.account-list{
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+.account-list caption div{
+    display: block;
+    height: 30px;
+    font-size: 30px;
+    font-family: 楷体;
+    margin-bottom: 10px;
+}
+.account-list caption a{
+    height: 20px;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+    background: #EEEEEE;
+    border: #CCCCCC 1px solid;
+    margin-bottom: 25px;
+}
+.account-list thead tr th{
+    height: 40px;
+}
+.account-list tbody tr td{
+    text-align: center;
+    height: 40px;
+}

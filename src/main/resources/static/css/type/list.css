@@ -1,0 +1,28 @@
+.type-list{
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+.type-list caption div{
+    display: block;
+    height: 30px;
+    font-size: 30px;
+    font-family: 楷体;
+    margin-bottom: 10px;
+}
+.type-list caption a{
+    height: 20px;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+    background: #EEEEEE;
+    border: #CCCCCC 1px solid;
+    margin-bottom: 25px;
+}
+.type-list thead tr th{
+    height: 40px;
+}
+.type-list tbody tr td{
+    text-align: center;
+    height: 40px;
+}

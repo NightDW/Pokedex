@@ -1,0 +1,36 @@
+﻿1 增加各种实体类：
+    Ability Category Pokemon Skill Type
+
+2 增加各种爬虫类及其相应的配置类：
+    XxxSpider XxxSpiderProperties
+
+3 引入MyBatis开发Mapper（注意映射文件一定要放在resources目录下）：
+    PokemonMapper SkillMapper AbilityMapper TypeMapper CategoryMapper
+
+4 添加以下组件，便于通过url地址来启动爬虫，从而把最原始的数据存储到数据库中：
+    DataInitController DataInitService
+
+5 Pokemon和Skill的增删改查操作基本完成
+    包括各种页面，Controller，Service等
+
+6 一些小调整：Pokemon类去掉icon_url属性，DefaultPokemonSpider类小优化
+    Showdown上宝可梦图标是用精灵图表示的，爬取精灵图没什么意义，而且用精灵图来显示图标比较麻烦
+    DefaultPokemonSpider在优化前会把无名称的特性存入数据库；优化后就不会了
+
+7 Ability，Type和Category的增删改查操作基本完成
+    包括各种页面，Controller，Service等
+
+8 小调整1：修改属性/特性/分类的名称时，对应的宝可梦/技能的属性/特性/分类的名称也会同步修改
+8 小调整2：删除属性/特性/分类时，引用了这个属性/特性/分类的宝可梦/技能也会删除，且删除前有弹窗提示
+    Pokemon/Skill的Mapper新增相关方法，Ability/Type/Category的Service相关方法的业务逻辑修改
+
+9 新增用户管理（如登录，授权）功能相关的组件
+    包括Account和Role实体类，以及它们相应的Mapper，Service和Controller等
+
+A 新增登录和注册相关的组件，引入Mail模块和Security模块
+    包括首页，登录页面，注册页面，和Mail相关的Controller和Service，以及和Security相关的配置
+
+B 小优化：账户名称改为不能重复，并且一个邮箱只能绑定一个账户
+B 小优化：注册账户时使用AJAX判断账户名称和邮箱是否已经注册；新增忘记密码功能；新增修改个人账户信息功能；优化初始化数据库的效率
+
+C 需要解决的问题：超级管理员修改某个账户权限后如何及时刷新该账户的权限？

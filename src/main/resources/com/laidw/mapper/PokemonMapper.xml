@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.laidw.mapper.PokemonMapper">
+
+    <!-- 抽取一些Sql片段 -->
+    <sql id="pokemonColsWithoutId">
+        <!-- icon_url, name, -->
+        name,
+        <if test="types != null">
+          <if test="types.size() >= 1">type_name1,</if>
+          <if test="types.size() == 2">type_name2,</if>
+        </if>
+        <if test="abilities != null">
+            <if test="abilities.size() >= 1">ability_name1,</if>
+            <if test="abilities.size() >= 2">ability_name2,</if>
+            <if test="abilities.size() == 3">ability_name3,</if>
+        </if>
+        hp, atk, def, spa, spd, spe
+    </sql>
+    <sql id="pokemonTypeValues">
+        <if test="types != null">
+            <if test="types.size() >= 1">#{types[0].name},</if>
+            <if test="types.size() == 2">#{types[1].name},</if>
+        </if>
+    </sql>
+    <sql id="pokemonAbilityValues">
+        <if test="abilities != null">
+            <if test="abilities.size() >= 1">#{abilities[0].name},</if>
+            <if test="abilities.size() >= 2">#{abilities[1].name},</if>
+            <if test="abilities.size() == 3">#{abilities[2].name},</if>
+        </if>
+    </sql>
+    <sql id="setTypes">
+        type_name1 = null, type_name2 = null,
+        <if test="types != null">
+            <if test="types.size() >= 1">
+                type_name1 = #{types[0].name},
+            </if>
+            <if test="types.size() == 2">
+                type_name2 = #{types[1].name},
+            </if>
+        </if>
+    </sql>
+    <sql id="setAbilities">
+        ability_name1 = null, ability_name2 = null, ability_name3 = null,
+        <if test="abilities != null">
+            <if test="abilities.size() >= 1">
+                ability_name1 = #{abilities[0].name},
+            </if>
+            <if test="abilities.size() >= 2">
+                ability_name2 = #{abilities[1].name},
+            </if>
+            <if test="abilities.size() == 3">
+                ability_name3 = #{abilities[2].name},
+            </if>
+        </if>
+    </sql>
+    <sql id="setOther">
+        hp = #{hp}, atk = #{atk}, def = #{def}, spa = #{spa}, spd = #{spd}, spe = #{spe}
+    </sql>
+    <sql id="setOtherIfNotNull">
+        <if test="hp != null">hp = #{hp},</if>
+        <if test="atk != null">atk = #{atk},</if>
+        <if test="def != null">def = #{def},</if>
+        <if test="spa != null">spa = #{spa},</if>
+        <if test="spd != null">spd = #{spd},</if>
+        <if test="spe != null">spe = #{spe}</if>
+    </sql>
+
+    <!-- 自定义封装规则，把查询结果封装成Pokemon对象 -->
+    <resultMap id="pokemonMap" type="com.laidw.entity.Pokemon">
+        <id column="id" property="id" />
+        <!--<result column="icon_url" property="iconUrl" />-->
+
+        <association select="com.laidw.mapper.TypeMapper.selectTypeByName" property="type1" column="type_name1" />
+        <association select="com.laidw.mapper.TypeMapper.selectTypeByName" property="type2" column="type_name2" />
+        <association select="com.laidw.mapper.AbilityMapper.selectAbilityByName" property="ability1" column="ability_name1" />
+        <association select="com.laidw.mapper.AbilityMapper.selectAbilityByName" property="ability2" column="ability_name2" />
+        <association select="com.laidw.mapper.AbilityMapper.selectAbilityByName" property="ability3" column="ability_name3" />
+
+        <!-- name hp atk def等字段在Pokemon类中都有同名的属性，可以不配置 -->
+    </resultMap>
+
+    <!-- savePokemon() -->
+    <insert id="savePokemon">
+        INSERT INTO pokemon
+          (<include refid="pokemonColsWithoutId" />)
+        VALUES
+          <!-- (#{iconUrl}, #{name}, <include refid="pokemonTypeValues" /> <include refid="pokemonAbilityValues" /> #{hp}, #{atk}, #{def}, #{spa}, #{spd}, #{spe}) -->
+          (#{name}, <include refid="pokemonTypeValues" /> <include refid="pokemonAbilityValues" /> #{hp}, #{atk}, #{def}, #{spa}, #{spd}, #{spe})
+    </insert>
+
+    <!-- deletePokemonByName() -->
+    <delete id="deletePokemonByName">
+        DELETE FROM pokemon WHERE name = #{name}
+    </delete>
+
+    <!-- deletePokemonById() -->
+    <delete id="deletePokemonById">
+        DELETE FROM pokemon WHERE id = #{id}
+    </delete>
+
+    <!-- deleteAllPokemons() -->
+    <delete id="deleteAllPokemons">
+        DELETE FROM pokemon
+    </delete>
+
+    <!-- deletePokemonsByTypeName() -->
+    <delete id="deletePokemonsByTypeName">
+        DELETE FROM pokemon WHERE type_name1 = #{typeName} OR type_name2 = #{typeName}
+    </delete>
+
+    <!-- deletePokemonsByAbilityName() -->
+    <delete id="deletePokemonsByAbilityName">
+        DELETE FROM pokemon WHERE ability_name1 = #{typeName} OR ability_name2 = #{typeName} OR ability_name3 = #{typeName}
+    </delete>
+
+    <!-- updatePokemonByNameSelectively() -->
+    <update id="updatePokemonByNameSelectively">
+        UPDATE pokemon
+        <set>
+            <!--<if test="iconUrl != null">icon_url = #{iconUrl},</if>-->
+            <if test="types != null"><include refid="setTypes" /></if>
+            <if test="abilities != null"><include refid="setAbilities" /></if>
+            <include refid="setOtherIfNotNull" />
+        </set>
+        WHERE name = #{name}
+    </update>
+
+    <!-- updatePokemonByName() -->
+    <update id="updatePokemonByName">
+        UPDATE pokemon
+        SET
+          <!-- icon_url = #{iconUrl}, -->
+          <include refid="setTypes" />
+          <include refid="setAbilities" />
+          <include refid="setOther" />
+        WHERE name = #{name}
+    </update>
+
+    <!-- updatePokemonByIdSelectively() -->
+    <update id="updatePokemonByIdSelectively">
+        UPDATE pokemon
+        <set>
+            <!--<if test="iconUrl != null">icon_url = #{iconUrl},</if>-->
+            <if test="name != null">name = #{name},</if>
+            <if test="types != null"><include refid="setTypes" /></if>
+            <if test="abilities != null"><include refid="setAbilities" /></if>
+            <include refid="setOtherIfNotNull" />
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- updatePokemonById() -->
+    <update id="updatePokemonById">
+        UPDATE pokemon
+        SET
+          <!-- icon_url = #{iconUrl}, -->
+          name = #{name},
+          <include refid="setTypes" />
+          <include refid="setAbilities" />
+          <include refid="setOther" />
+        WHERE id = #{id}
+    </update>
+
+    <!-- renamePokemonTypeName() -->
+    <update id="renamePokemonTypeName">
+        UPDATE pokemon SET type_name1 = #{newName} WHERE type_name1 = #{oldName};
+        UPDATE pokemon SET type_name2 = #{newName} WHERE type_name2 = #{oldName}
+    </update>
+
+    <!-- renamePokemonAbilityName() -->
+    <update id="renamePokemonAbilityName">
+        UPDATE pokemon SET ability_name1 = #{newName} WHERE ability_name1 = #{oldName};
+        UPDATE pokemon SET ability_name2 = #{newName} WHERE ability_name2 = #{oldName};
+        UPDATE pokemon SET ability_name3 = #{newName} WHERE ability_name3 = #{oldName}
+    </update>
+
+    <!-- selectPokemonByName() -->
+    <select id="selectPokemonByName" resultMap="pokemonMap">
+        SELECT * FROM pokemon WHERE name = #{name}
+    </select>
+
+    <!-- selectPokemonById() -->
+    <select id="selectPokemonById" resultMap="pokemonMap">
+        SELECT * FROM pokemon WHERE id = #{id}
+    </select>
+
+    <!-- selectAllPokemons() -->
+    <select id="selectAllPokemons" resultMap="pokemonMap">
+        SELECT * FROM pokemon
+    </select>
+</mapper>

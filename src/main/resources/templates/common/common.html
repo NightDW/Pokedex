@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}">
+    <link rel="stylesheet" th:href="@{/css/common/top.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/head.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/navigate-bar.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/foot.css}" />
+    <title>片段</title>
+</head>
+<body>
+<div class="account-info" th:fragment="account-info">
+    <div>
+        <a th:href="@{/}">回到首页</a>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+        游客您好，请<a th:href="@{/login}">登录</a>或<a th:href="@{/registry}">注册</a>！
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        您好，<span sec:authentication="name"></span>！<a href="javascript:" id="logoutLink">登出</a>&nbsp;<a th:href="@{/modify}">修改个人信息</a>
+        <form id="logoutForm" th:action="@{/logout}" method="post"></form>
+    </div>
+</div>
+
+<!-- 头部，用于宝可梦信息管理页面 -->
+<div class="top" th:fragment="top">
+    <div class="up">
+        <div class="title">宝可梦图鉴</div>
+    </div>
+    <div class="down">
+        <div class="select">
+            <a th:href="@{/pokemons/1}">宝可梦数据</a>
+            <a th:href="@{/skills/1}">技能数据</a>
+            <a th:href="@{/types/1}">宝可梦属性</a>
+            <a th:href="@{/categories/1}">技能分类</a>
+            <a th:href="@{/abilities/1}">宝可梦特性</a>
+        </div>
+    </div>
+</div>
+
+<!-- 头部，用于账户信息管理页面 -->
+<div class="head" th:fragment="head">
+    <div class="up">
+        <div class="title">账户管理系统</div>
+    </div>
+    <div class="down">
+        <div class="select">
+            <a th:href="@{/accounts/1}">账户管理</a>
+            <a th:href="@{/roles/1}">角色管理</a>
+        </div>
+    </div>
+</div>
+
+<!-- 用于提交修改/删除请求的Form表单，引用时最外层的div标签不用引入 -->
+<div th:fragment="forms(pageBean)">
+    <form id="deleteForm" method="post">
+        <input type="hidden" name="_method" value="delete" />
+        <input type="hidden" name="curPage" th:value="${pageBean.pageInfo.pageNum}" />
+    </form>
+    <form id="updateForm" method="get">
+        <input type="hidden" name="curPage" th:value="${pageBean.pageInfo.pageNum}" />
+    </form>
+</div>
+
+<!-- 导航条，需要传入一写参数，以便导航条里面的链接能正确跳转到指定页面 -->
+<div class="navigate-bar" th:fragment="navigate-bar(pageBean, dataName)">
+    <div class="a-tags">
+        <a th:href="${pageBean.pageInfo.isFirstPage} ? _ : @{/} + ${dataName} + '/' + '1'">首页</a>
+        <a th:href="${pageBean.pageInfo.isFirstPage} ? _ : @{/} + ${dataName} + '/' + ${pageBean.pageInfo.pageNum - 1}">上一页</a>
+        <a th:each="num, numStat : ${pageBean.pageInfo.navigatepageNums}" th:text="${num}" th:href="${pageBean.pageInfo.pageNum == num} ? _ : @{/} + ${dataName} + '/' + ${num}"></a>
+        <a th:href="${pageBean.pageInfo.isLastPage} ? _ : @{/} + ${dataName} + '/' + ${pageBean.pageInfo.pageNum + 1}">下一页</a>
+        <a th:href="${pageBean.pageInfo.isLastPage} ? _ : @{/} + ${dataName} + '/' + ${pageBean.pageInfo.pages}">尾页</a>
+    </div>
+</div>
+
+<!-- 尾部 -->
+<div class="foot" th:fragment="foot">
+    <div class="from">&copy;宝可梦的数据主要来自<a href="https://pokemonshowdown.com/" target="_blank">PokemonShowdown</a></div>
+    <div class="author">&copy;欢迎访问<a href="https://github.com/NightDW" target="_blank">我的Github主页</a></div>
+</div>
+</body>
+
+<!-- 引入JQuery的script标签 -->
+<script th:fragment="jquery" th:src="@{/webjars/jquery/3.3.1/jquery.js}" ></script>
+
+<!-- 退出登录表单用的一段JS代码 -->
+<script th:fragment="logoutFormJS">
+    $("#logoutLink").click(function () {
+        $("#logoutForm").submit();
+    })
+</script>
+
+<!-- 提交Form表单用的一段JS代码 -->
+<script th:fragment="submitFormJS">
+    $(".deleteButton").click(function () {
+        var tip1 = "您确定要删除这条记录吗？若删除的是特性/属性/分类（或角色），";
+        var tip2 = "那么有该特性/属性/分类（或角色）的宝可梦/技能（或账户）也将被删除！";
+        if(confirm(tip1 + tip2)) {
+            $("#deleteForm").attr("action", $(this).attr("submit_uri")).submit();
+        }
+    });
+    $(".updateButton").click(function () {
+        $("#updateForm").attr("action", $(this).attr("submit_uri")).submit();
+    })
+</script>
+</html>

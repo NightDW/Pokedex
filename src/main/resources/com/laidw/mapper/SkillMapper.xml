@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.laidw.mapper.SkillMapper">
+
+    <!-- 抽取一些Sql片段 -->
+    <sql id="setAllWithoutNameIfNotNull">
+        <if test="type != null">type_name = #{type.name},</if>
+        <if test="category != null">category_name = #{category.name},</if>
+        <if test="power != null">pow = #{power},</if>
+        <if test="accuracy != null">accuracy = #{accuracy},</if>
+        <if test="pp != null">pp = #{pp},</if>
+        <if test="effect != null">effect = #{effect}</if>
+    </sql>
+    <sql id="setAllWithoutName">
+        type_name = #{type.name},
+        category_name = #{category.name},
+        pow = #{power},
+        accuracy = #{accuracy},
+        pp = #{pp},
+        effect = #{effect}
+    </sql>
+
+    <!-- 自定义封装规则，把查询结果封装成Skill对象 -->
+    <resultMap id="skillMap" type="com.laidw.entity.Skill">
+        <id column="id" property="id" />
+        <result column="pow" property="power" />
+
+        <association select="com.laidw.mapper.TypeMapper.selectTypeByName" property="type" column="type_name" />
+        <association select="com.laidw.mapper.CategoryMapper.selectCategoryByName" property="category" column="category_name" />
+
+        <!-- 其它字段在Skill类中都有同名的属性，可以不配置 -->
+    </resultMap>
+
+    <!-- saveSkill() -->
+    <insert id="saveSkill">
+        INSERT INTO skill
+          (name, type_name, category_name, pow, accuracy, pp, effect)
+        VALUES
+          (#{name}, #{type.name}, #{category.name}, #{power}, #{accuracy}, #{pp}, #{effect})
+    </insert>
+
+    <!-- deleteSkillByName() -->
+    <delete id="deleteSkillByName">
+        DELETE FROM skill WHERE name = #{name}
+    </delete>
+
+    <!-- deleteSkillById() -->
+    <delete id="deleteSkillById">
+        DELETE FROM skill WHERE id = #{id}
+    </delete>
+
+    <!-- deleteAllSkills() -->
+    <delete id="deleteAllSkills">
+        DELETE FROM skill
+    </delete>
+
+    <!-- deleteSkillsByTypeName() -->
+    <delete id="deleteSkillsByTypeName">
+        DELETE FROM skill WHERE type_name = #{typeName}
+    </delete>
+
+    <!-- deleteSkillsByCategoryName() -->
+    <delete id="deleteSkillsByCategoryName">
+        DELETE FROM skill WHERE category_name = #{categoryName}
+    </delete>
+
+    <!-- updateSkillByNameSelectively() -->
+    <update id="updateSkillByNameSelectively">
+        UPDATE skill
+        <set>
+            <include refid="setAllWithoutNameIfNotNull" />
+        </set>
+        WHERE name = #{name}
+    </update>
+
+    <!-- updateSkillByName() -->
+    <update id="updateSkillByName">
+        UPDATE skill
+        SET
+          <include refid="setAllWithoutName" />
+        WHERE name = #{name}
+    </update>
+
+    <!-- updateSkillByIdSelectively() -->
+    <update id="updateSkillByIdSelectively">
+        UPDATE skill
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <include refid="setAllWithoutNameIfNotNull" />
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- updateSkillById() -->
+    <update id="updateSkillById">
+        UPDATE skill
+        SET
+          name = #{name},
+          <include refid="setAllWithoutName" />
+        WHERE id = #{id}
+    </update>
+
+    <!-- renameSkillTypeName() -->
+    <update id="renameSkillTypeName">
+        UPDATE skill SET type_name = #{newName} WHERE type_name = #{oldName}
+    </update>
+
+    <!-- renameSkillCategoryName() -->
+    <update id="renameSkillCategoryName">
+        UPDATE skill SET category_name = #{newName} WHERE category_name = #{oldName}
+    </update>
+
+    <!-- selectSkillByName() -->
+    <select id="selectSkillByName" resultMap="skillMap">
+        SELECT * FROM skill WHERE name = #{name}
+    </select>
+
+    <!-- selectSkillById() -->
+    <select id="selectSkillById" resultMap="skillMap">
+        SELECT * FROM skill WHERE id = #{id}
+    </select>
+
+    <!-- selectAllSkills() -->
+    <select id="selectAllSkills" resultMap="skillMap">
+        SELECT * FROM skill
+    </select>
+</mapper>

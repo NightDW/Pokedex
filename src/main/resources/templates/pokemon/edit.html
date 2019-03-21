@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common/account-info.css}">
+    <link rel="stylesheet" th:href="@{/css/pokemon/edit.css}">
+    <title>编辑</title>
+</head>
+<!--
+    修改宝可梦信息时会先查找宝可梦信息然后转发到这个页面
+    添加宝可梦信息时同样会跳转到这个页面
+    也就是说这个页面需要负责宝可梦的修改和添加
+    可以根据请求域中是否有pokemon对象来判断是修改还是添加
+    如果是修改，提交的请求需要用PUT方式；添加则用POST方式
+-->
+<body>
+<div th:replace="common/common::account-info"></div>
+
+    <div class="tip">请填写宝可梦的详细信息</div>
+
+    <form th:action="@{/pokemon}" method="post">
+        <!-- 如果获取到了pokemon对象，说明此时是修改操作，需要把id提交给服务器 -->
+        <input type="hidden" th:if="${pokemon != null}" name="id" th:value="${pokemon.id}" />
+        <!-- 同理，如果获取到了pokemon对象，则需要把请求方式改为PUT -->
+        <input type="hidden" th:if="${pokemon != null}" name="_method" value="put" />
+        <!-- 再提供一个参数，方便添加/修改完成后可以重定向回原来的那个页面 -->
+        <input type="hidden" th:if="${curPage != null}" name="curPage" th:value="${curPage}" />
+        <div>
+            <span>名称：</span>
+            <input type="text" name="name" th:value="${pokemon == null} ? _ : ${pokemon.name}" />
+        </div>
+        <div>
+            <span>属性1：</span>
+            <select name="types[0].name">
+                <option>None</option>
+                <option th:each="type, typeStat : ${types}" th:text="${type.name}" th:value="${type.name}" th:selected="(${pokemon != null && #lists.size(pokemon.types) >= 1 && pokemon.types[0].name == type.name}) ? 'selected' : _"></option>
+            </select>
+            <span>属性2：</span>
+            <select name="types[1].name">
+                <option>None</option>
+                <option th:each="type, typeStat : ${types}" th:text="${type.name}" th:value="${type.name}" th:selected="(${pokemon != null && #lists.size(pokemon.types) >= 2 && pokemon.types[1].name == type.name}) ? 'selected' : _"></option>
+            </select>
+        </div>
+
+        <div>
+            <span>特性1：</span>
+            <select name="abilities[0].name">
+                <option>None</option>
+                <option th:each="ability, abilityStat : ${abilities}" th:text="${ability.name}" th:value="${ability.name}" th:selected="(${pokemon != null && #lists.size(pokemon.abilities) >= 1 && pokemon.abilities[0].name == ability.name}) ? 'selected' : _"></option>
+            </select>
+            <span>特性2：</span>
+            <select name="abilities[1].name">
+                <option>None</option>
+                <option th:each="ability, abilityStat : ${abilities}" th:text="${ability.name}" th:value="${ability.name}" th:selected="(${pokemon != null && #lists.size(pokemon.abilities) >= 2 && pokemon.abilities[1].name == ability.name}) ? 'selected' : _"></option>
+            </select>
+            <span>特性3：</span>
+            <select name="abilities[2].name">
+                <option>None</option>
+                <option th:each="ability, abilityStat : ${abilities}" th:text="${ability.name}" th:value="${ability.name}" th:selected="(${pokemon != null && #lists.size(pokemon.abilities) >= 3 && pokemon.abilities[2].name == ability.name}) ? 'selected' : _"></option>
+            </select>
+        </div>
+        <div>
+            <span>HP：</span>
+            <input type="text" name="hp" th:value="${pokemon == null} ? _ : ${pokemon.hp}" />
+            <span>速度：</span>
+            <input type="text" name="spe" th:value="${pokemon == null} ? _ : ${pokemon.spe}" />
+        </div>
+        <div>
+            <span>物攻：</span>
+            <input type="text" name="atk" th:value="${pokemon == null} ? _ : ${pokemon.atk}" />
+            <span>特攻：</span>
+            <input type="text" name="spa" th:value="${pokemon == null} ? _ : ${pokemon.spa}" />
+        </div>
+        <div>
+            <span>物防：</span>
+            <input type="text" name="def" th:value="${pokemon == null} ? _ : ${pokemon.def}" />
+            <span>特防：</span>
+            <input type="text" name="spd" th:value="${pokemon == null} ? _ : ${pokemon.spd}" />
+        </div>
+        <div>
+            <input type="submit" value="提交" />
+        </div>
+    </form>
+</body>
+
+<div th:replace="common/common::jquery"></div>
+<div th:replace="common/common::logoutFormJS"></div>
+
+</html>
