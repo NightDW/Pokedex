@@ -1,5 +1,5 @@
-宝可梦图鉴，主要是对宝可梦信息的增删改查，宝可梦数据来自PokemonShowDown：
-https://dex.pokemonshowdown.com/pokemon/
+宝可梦图鉴，主要是对宝可梦信息的增删改查，宝可梦数据来自PokemonShowDown。
+PS地址：https://dex.pokemonshowdown.com/pokemon/
 
 ----------------------------------------------------------------------------
 
